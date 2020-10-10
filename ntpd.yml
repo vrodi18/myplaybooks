@@ -4,3 +4,17 @@
     yum: 
       name: ntp
       state: latest
+  - name: Reconfigure time servers
+    lineinfile:
+      path: /etc/ntp.conf
+      regexp: "^server 0.amazon.pool.ntp.org iburst$"
+      line: "server pool.ntp.org iburst"
+  - name: Delete unused time servers
+    lineinfile:
+      path: /etc/ntp.conf
+      regexp: "^server [1,2,3].amazon.pool.ntp.org iburst$"
+      state: absent
+  - name: Start ntpd
+    service:
+      name: ntpd
+      state: started
